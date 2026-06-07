@@ -11,6 +11,8 @@ outputs/
 
 # Local secrets
 .streamlit/secrets.toml
+**/.streamlit/secrets.toml
 
 # Empty/temporary artifacts
 gradient_boosting_rescue.pkl
+

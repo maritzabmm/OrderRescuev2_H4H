@@ -11,6 +11,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 
+
 st.set_page_config(page_title="Stocki | Arca Continental",
     page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
 
