@@ -621,10 +621,11 @@ elif "Panel" in menu:
                 "prod_full": prod,
             })
 
-        # Column widths — last col wider for 2 separate buttons
-        COL_W = [0.7, 0.6, 0.7, 1.6, 1.1, 0.3, 0.85, 0.5, 0.65, 1.0, 0.55, 0.45, 0.45]
-        HDRS  = ["ID PEDIDO","CUSTOMER","CEDIS","PRODUCTO","SUSTITUTO",
-                 "QTY","STATUS","FECHA","SUBTOTAL","PROB.","RIESGO","💬","🔊"]
+        # Column widths tuned for Streamlit Cloud's narrower viewport.
+        # Keep short headers so they do not wrap letter-by-letter.
+        COL_W = [0.95, 0.85, 0.85, 2.25, 1.55, 0.55, 1.05, 0.75, 0.85, 1.25, 0.85, 0.45, 0.45]
+        HDRS  = ["PEDIDO","CLIENTE","CEDIS","PRODUCTO","SUST.",
+                 "QTY","STATUS","FECHA","SUBT.","PROB.","RIESGO","💬","🔊"]
 
         # Header
         hdr_cols = st.columns(COL_W)
@@ -632,6 +633,7 @@ elif "Panel" in menu:
             col.markdown(
                 f"<div style='font-size:.64rem;font-weight:700;color:#777;"
                 f"text-transform:uppercase;letter-spacing:.7px;"
+                f"white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
                 f"padding:5px 3px;border-bottom:2px solid #E4002B;'>{h}</div>",
                 unsafe_allow_html=True)
 
@@ -642,18 +644,22 @@ elif "Panel" in menu:
             stat_css, stat_label = STATUS_STYLES.get(rd["stat"], ("background:#f0f0f0;color:#444;", rd["stat"]))
             nivel_css = NIVEL_STYLES.get(rd["nivel"], "background:#f0f0f0;color:#444;")
             bg = "#fafafa" if i%2==0 else "#fff"
-            cs = f"font-size:.77rem;padding:7px 3px;background:{bg};border-bottom:1px solid #f0f0f0;"
+            cs = (
+                f"font-size:.77rem;padding:7px 3px;background:{bg};"
+                f"border-bottom:1px solid #f0f0f0;"
+                f"word-break:normal;overflow-wrap:normal;"
+            )
 
             row_cols = st.columns(COL_W)
-            row_cols[0].markdown(f"<div style='{cs}color:#aaa;font-family:monospace;font-size:.69rem;'>{rd['pid']}</div>", unsafe_allow_html=True)
-            row_cols[1].markdown(f"<div style='{cs}color:#aaa;'>{rd['cid']}</div>", unsafe_allow_html=True)
-            row_cols[2].markdown(f"<div style='{cs}font-weight:700;font-size:.76rem;'>CEDIS {rd['cedi']}</div>", unsafe_allow_html=True)
-            row_cols[3].markdown(f"<div style='{cs}font-weight:500;'>{rd['prod']}</div>", unsafe_allow_html=True)
-            row_cols[4].markdown(f"<div style='{cs}color:#888;font-size:.73rem;'>{rd['sust']}</div>", unsafe_allow_html=True)
+            row_cols[0].markdown(f"<div style='{cs}color:#aaa;font-family:monospace;font-size:.69rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['pid']}</div>", unsafe_allow_html=True)
+            row_cols[1].markdown(f"<div style='{cs}color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['cid']}</div>", unsafe_allow_html=True)
+            row_cols[2].markdown(f"<div style='{cs}font-weight:700;font-size:.76rem;white-space:nowrap;'>CEDIS {rd['cedi']}</div>", unsafe_allow_html=True)
+            row_cols[3].markdown(f"<div style='{cs}font-weight:500;line-height:1.25;'>{rd['prod']}</div>", unsafe_allow_html=True)
+            row_cols[4].markdown(f"<div style='{cs}color:#888;font-size:.73rem;line-height:1.25;'>{rd['sust']}</div>", unsafe_allow_html=True)
             row_cols[5].markdown(f"<div style='{cs}text-align:center;'>{rd['qty']}</div>", unsafe_allow_html=True)
             row_cols[6].markdown(f"<div style='{cs}'><span style='{stat_css}border-radius:20px;padding:2px 8px;font-size:.71rem;font-weight:600;'>{stat_label}</span></div>", unsafe_allow_html=True)
-            row_cols[7].markdown(f"<div style='{cs}color:#888;'>{rd['fecha']}</div>", unsafe_allow_html=True)
-            row_cols[8].markdown(f"<div style='{cs}font-weight:600;'>{rd['subt']}</div>", unsafe_allow_html=True)
+            row_cols[7].markdown(f"<div style='{cs}color:#888;white-space:nowrap;'>{rd['fecha']}</div>", unsafe_allow_html=True)
+            row_cols[8].markdown(f"<div style='{cs}font-weight:600;white-space:nowrap;'>{rd['subt']}</div>", unsafe_allow_html=True)
             row_cols[9].markdown(
                 f"<div style='{cs}display:flex;align-items:center;gap:4px;'>"
                 f"<div style='background:#f0f0f0;border-radius:6px;height:6px;width:48px;flex-shrink:0;'>"
