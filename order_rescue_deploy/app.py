@@ -1,9 +1,9 @@
 """
 Order Rescue AI — Hack4Her · Arca Continental
-Equipo: Code Minds
+Equipo: Coded Minds
 Stack: XGBoost | Google Gemini | ElevenLabs | Twilio
 """
-import os, json, html, warnings, urllib.parse
+import os, json, html, base64, warnings, urllib.parse
 warnings.filterwarnings("ignore")
 import streamlit as st
 import pandas as pd
@@ -30,6 +30,7 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;color:var(--black);backg
   color:#fff;letter-spacing:-1px;margin:0;text-transform:uppercase;}
 .main-header h1 span{color:var(--red-soft);}
 .main-header p{color:rgba(255,255,255,.75);font-size:.95rem;margin:6px 0 0;}
+.stocki-home-logo{height:74px;max-width:310px;object-fit:contain;margin-bottom:10px;}
 .kpi-card{background:var(--white);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);
   border-top:4px solid var(--red);}
 .kpi-label{font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray-500);
@@ -78,6 +79,7 @@ DEMO_PATH  = os.path.join(BASE_DIR, "data_demo.csv")
 SUMMARY_PATH = os.path.join(BASE_DIR, "summary_metrics.json")
 PRED_PATH  = os.path.join(BASE_DIR, "outputs", "predicciones_gradient_boosting.csv")
 MODEL_PATH = os.path.join(BASE_DIR, "models", "gradient_boosting_order_rescue.pkl")
+LOGO_PATH = os.path.join(BASE_DIR, "logo_stocki.png")
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 MERGED_PATH = os.path.join(BASE_DIR, "merged.csv")
@@ -104,6 +106,14 @@ def fmt_kpi(value):
     if value >= 1_000:
         return f"{value/1_000:.1f}K"
     return f"{value:,.0f}"
+
+def image_data_uri(path: str) -> str:
+    try:
+        with open(path, "rb") as f:
+            encoded = base64.b64encode(f.read()).decode("utf-8")
+        return f"data:image/png;base64,{encoded}"
+    except Exception:
+        return ""
 
 @st.cache_data(show_spinner=False)
 def load_summary_metrics(path: str = SUMMARY_PATH) -> dict:
@@ -375,7 +385,7 @@ with st.sidebar:
     st.markdown("""<div style='text-align:center;'>
         <span style='background:#E4002B;color:#fff;font-family:Barlow Condensed,sans-serif;
               font-weight:700;font-size:.8rem;letter-spacing:2px;padding:5px 12px;
-              border-radius:6px;display:inline-block;'>⚡ CODED MINDS</span>
+              border-radius:6px;display:inline-block;'>⚡ Coded Minds</span>
         <div style='font-size:.65rem;color:#666;margin-top:6px;'>Hack4Her 2026</div>
         <div style='font-size:.62rem;color:#666;margin-top:2px;'>Demo pública con muestra ligera</div>
     </div>""", unsafe_allow_html=True)
@@ -400,11 +410,13 @@ df = st.session_state.df
 # HOME
 # ══════════════════════════════════════════════
 if "Home" in menu:
-    st.markdown("""<div class='main-header'>
-        <h1>🛡️ Order <span>Rescue</span> AI</h1>
+    logo_uri = image_data_uri(LOGO_PATH)
+    logo_html = f"<img class='stocki-home-logo' src='{logo_uri}' alt='Stocki'>" if logo_uri else "<h1>Stocki</h1>"
+    st.markdown(f"""<div class='main-header'>
+        {logo_html}
         <p>No predecimos sustituciones: <strong>las rescatamos antes de que afecten al cliente.</strong></p>
         <p style='margin-top:10px;font-size:.78rem;opacity:.6;'>
-            Arca Continental · Hack4Her 2026 · <strong style='color:#FF4D6D;'>Code Minds</strong></p>
+            Arca Continental · Hack4Her 2026 · <strong style='color:#FF4D6D;'>Coded Minds</strong></p>
     </div>""", unsafe_allow_html=True)
 
     if df.empty:
