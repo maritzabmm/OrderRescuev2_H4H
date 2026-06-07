@@ -9,4 +9,3 @@ plotly>=5.15.0
 requests
 google-genai
 twilio
-google-genai
