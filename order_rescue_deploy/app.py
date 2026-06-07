@@ -376,7 +376,7 @@ with st.sidebar:
         <span style='background:#E4002B;color:#fff;font-family:Barlow Condensed,sans-serif;
               font-weight:700;font-size:.8rem;letter-spacing:2px;padding:5px 12px;
               border-radius:6px;display:inline-block;'>⚡ CODED MINDS</span>
-        <div style='font-size:.65rem;color:#666;margin-top:6px;'>Hack4Her 2025</div>
+        <div style='font-size:.65rem;color:#666;margin-top:6px;'>Hack4Her 2026</div>
         <div style='font-size:.62rem;color:#666;margin-top:2px;'>Demo pública con muestra ligera</div>
     </div>""", unsafe_allow_html=True)
 
@@ -404,7 +404,7 @@ if "Home" in menu:
         <h1>🛡️ Order <span>Rescue</span> AI</h1>
         <p>No predecimos sustituciones: <strong>las rescatamos antes de que afecten al cliente.</strong></p>
         <p style='margin-top:10px;font-size:.78rem;opacity:.6;'>
-            Arca Continental · Hack4Her 2025 · <strong style='color:#FF4D6D;'>Code Minds</strong></p>
+            Arca Continental · Hack4Her 2026 · <strong style='color:#FF4D6D;'>Code Minds</strong></p>
     </div>""", unsafe_allow_html=True)
 
     if df.empty:
@@ -1063,5 +1063,5 @@ elif "Revenue" in menu:
 st.markdown("""<div style='text-align:center;color:#ccc;font-size:.72rem;padding:14px;
     border-top:1px solid #eee;margin-top:20px;'>
     Order Rescue AI · <strong style='color:#E4002B;'>Coded Minds</strong> ·
-    Hack4Her 2025 · Arca Continental · XGBoost · Gemini · ElevenLabs · Twilio
+    Hack4Her 2026 · Arca Continental · XGBoost · Gemini · ElevenLabs · Twilio
 </div>""", unsafe_allow_html=True)
