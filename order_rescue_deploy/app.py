@@ -33,7 +33,7 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;color:var(--black);backg
 .stocki-home-logo{height:74px;max-width:310px;object-fit:contain;margin-bottom:10px;}
 .kpi-card{background:var(--white);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);
   border-top:4px solid var(--red);}
-.kpi-label{font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray-500);
+.kpi-label{font-size:.67rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray-500);
   font-weight:700;margin-bottom:4px;}
 .kpi-value{font-family:'Barlow Condensed',sans-serif;font-size:2.4rem;font-weight:800;
   color:var(--black);line-height:1;}
@@ -68,6 +68,11 @@ html,body,[class*="css"]{font-family:'Inter',sans-serif;color:var(--black);backg
 .prob-bar-wrap{background:#f0f0f0;border-radius:10px;height:8px;width:80px;display:inline-block;vertical-align:middle;}
 .prob-bar{height:8px;border-radius:10px;}
 div[data-testid="stMetric"]{background:#fff;border-radius:10px;padding:12px;box-shadow:var(--shadow);}
+/* Compact controls for the orders panel */
+div[data-testid="stSelectbox"] label, div[data-testid="stTextInput"] label{font-size:.8rem!important;margin-bottom:2px!important;}
+div[data-testid="stSelectbox"] [data-baseweb="select"]>div{min-height:42px!important;padding-top:2px!important;padding-bottom:2px!important;}
+div[data-testid="stTextInput"] input{min-height:42px!important;padding-top:4px!important;padding-bottom:4px!important;font-size:.86rem!important;}
+div[data-testid="stButton"] button{min-height:36px!important;padding:.25rem .45rem!important;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -353,7 +358,7 @@ with st.sidebar:
     st.markdown("""<div style='text-align:center;padding:16px 0 8px;'>
         <div style='font-family:Barlow Condensed,sans-serif;font-size:1.6rem;font-weight:800;
                     color:#E4002B;letter-spacing:1px;'>Stocki</div>
-        <div style='font-size:.7rem;color:#aaa;letter-spacing:2px;'>AI PLATFORM</div>
+        <div style='font-size:.67rem;color:#aaa;letter-spacing:2px;'>AI PLATFORM</div>
     </div>""", unsafe_allow_html=True)
     st.divider()
 
@@ -676,7 +681,7 @@ elif "Panel" in menu:
                 f"<div style='font-size:.64rem;font-weight:700;color:#777;"
                 f"text-transform:uppercase;letter-spacing:.7px;"
                 f"white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
-                f"padding:5px 3px;border-bottom:2px solid #E4002B;'>{h}</div>",
+                f"padding:4px 3px;border-bottom:2px solid #E4002B;'>{h}</div>",
                 unsafe_allow_html=True)
 
         # Data rows — each column is a Streamlit column, last two are buttons
@@ -687,8 +692,8 @@ elif "Panel" in menu:
             nivel_css = NIVEL_STYLES.get(rd["nivel"], "background:#f0f0f0;color:#444;")
             bg = "#fafafa" if i%2==0 else "#fff"
             cs = (
-                f"font-size:.77rem;padding:8px 3px;background:{bg};"
-                f"border-bottom:1px solid #f0f0f0;min-height:48px;"
+                f"font-size:.72rem;padding:5px 3px;background:{bg};"
+                f"border-bottom:1px solid #f0f0f0;min-height:38px;"
                 f"box-sizing:border-box;word-break:normal;overflow-wrap:normal;"
             )
             prod_cs = (
@@ -697,30 +702,30 @@ elif "Panel" in menu:
                 f"overflow:hidden;overflow-wrap:anywhere;"
             )
             sust_cs = (
-                f"{cs}color:#888;font-size:.73rem;line-height:1.2;"
+                f"{cs}color:#888;font-size:.70rem;line-height:1.2;"
                 f"display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"
                 f"overflow:hidden;overflow-wrap:anywhere;"
             )
 
             row_cols = st.columns(COL_W)
-            row_cols[0].markdown(f"<div style='{cs}color:#aaa;font-family:monospace;font-size:.69rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['pid']}</div>", unsafe_allow_html=True)
+            row_cols[0].markdown(f"<div style='{cs}color:#aaa;font-family:monospace;font-size:.66rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['pid']}</div>", unsafe_allow_html=True)
             row_cols[1].markdown(f"<div style='{cs}color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['cid']}</div>", unsafe_allow_html=True)
-            row_cols[2].markdown(f"<div style='{cs}font-weight:700;font-size:.76rem;white-space:nowrap;'>CEDIS {rd['cedi']}</div>", unsafe_allow_html=True)
+            row_cols[2].markdown(f"<div style='{cs}font-weight:700;font-size:.72rem;white-space:nowrap;'>CEDIS {rd['cedi']}</div>", unsafe_allow_html=True)
             prod_html = html.escape(rd["prod"])
             sust_html = html.escape(rd["sust"])
             row_cols[3].markdown(f"<div title='{prod_html}' style='{prod_cs}'>{prod_html}</div>", unsafe_allow_html=True)
             row_cols[4].markdown(f"<div title='{sust_html}' style='{sust_cs}'>{sust_html}</div>", unsafe_allow_html=True)
             row_cols[5].markdown(f"<div style='{cs}text-align:center;'>{rd['qty']}</div>", unsafe_allow_html=True)
-            row_cols[6].markdown(f"<div style='{cs}'><span style='{stat_css}border-radius:20px;padding:2px 8px;font-size:.71rem;font-weight:600;'>{stat_label}</span></div>", unsafe_allow_html=True)
+            row_cols[6].markdown(f"<div style='{cs}'><span style='{stat_css}border-radius:20px;padding:2px 8px;font-size:.68rem;font-weight:600;'>{stat_label}</span></div>", unsafe_allow_html=True)
             row_cols[7].markdown(f"<div style='{cs}color:#888;white-space:nowrap;'>{rd['fecha']}</div>", unsafe_allow_html=True)
             row_cols[8].markdown(f"<div style='{cs}font-weight:600;white-space:nowrap;'>{rd['subt']}</div>", unsafe_allow_html=True)
             row_cols[9].markdown(
                 f"<div style='{cs}display:flex;align-items:center;gap:4px;'>"
-                f"<div style='background:#f0f0f0;border-radius:6px;height:6px;width:48px;flex-shrink:0;'>"
-                f"<div style='background:{prob_col};width:{prob_pct}%;height:6px;border-radius:6px;'></div></div>"
-                f"<span style='font-size:.73rem;font-weight:700;color:{prob_col};'>{prob_pct}%</span>"
+                f"<div style='background:#f0f0f0;border-radius:6px;height:5px;width:42px;flex-shrink:0;'>"
+                f"<div style='background:{prob_col};width:{prob_pct}%;height:5px;border-radius:6px;'></div></div>"
+                f"<span style='font-size:.70rem;font-weight:700;color:{prob_col};'>{prob_pct}%</span>"
                 f"</div>", unsafe_allow_html=True)
-            row_cols[10].markdown(f"<div style='{cs}'><span style='{nivel_css}border-radius:20px;padding:2px 7px;font-size:.7rem;font-weight:700;'>{rd['nivel']}</span></div>", unsafe_allow_html=True)
+            row_cols[10].markdown(f"<div style='{cs}'><span style='{nivel_css}border-radius:20px;padding:2px 7px;font-size:.67rem;font-weight:700;'>{rd['nivel']}</span></div>", unsafe_allow_html=True)
 
             # 💬 button — go to notification view in mensaje mode
             with row_cols[11]:
@@ -927,7 +932,7 @@ elif "Recomendación" in menu:
     c1,c2 = st.columns(2)
     with c1:
         st.markdown(f"""<div class='alert-box'>
-            <div style='font-size:.7rem;color:#888;text-transform:uppercase;letter-spacing:1px;'>Producto Solicitado</div>
+            <div style='font-size:.67rem;color:#888;text-transform:uppercase;letter-spacing:1px;'>Producto Solicitado</div>
             <div style='font-size:1.3rem;font-weight:700;margin:6px 0;'>{sku_sel}</div>
             <div style='color:{color_nivel};font-weight:700;font-size:1rem;'>
                 {'🔴' if nivel_val=='Alto' else '🟡' if nivel_val=='Medio' else '🟢'}
