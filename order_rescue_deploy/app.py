@@ -3,7 +3,7 @@ Order Rescue AI — Hack4Her · Arca Continental
 Equipo: Code Minds
 Stack: XGBoost | Google Gemini | ElevenLabs | Twilio
 """
-import os, warnings, urllib.parse
+import os, json, warnings, urllib.parse
 warnings.filterwarnings("ignore")
 import streamlit as st
 import pandas as pd
@@ -75,6 +75,7 @@ div[data-testid="stMetric"]{background:#fff;border-radius:10px;padding:12px;box-
 # ─────────────────────────────────────────────
 BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
 DEMO_PATH  = os.path.join(BASE_DIR, "data_demo.csv")
+SUMMARY_PATH = os.path.join(BASE_DIR, "summary_metrics.json")
 PRED_PATH  = os.path.join(BASE_DIR, "outputs", "predicciones_gradient_boosting.csv")
 MODEL_PATH = os.path.join(BASE_DIR, "models", "gradient_boosting_order_rescue.pkl")
 OUTPUT_DIR = os.path.join(BASE_DIR, "outputs")
@@ -95,6 +96,40 @@ def fmt_money(x):
     return f"${x:,.0f}"
 
 def fmt_pct(x): return f"{x:.1%}"
+
+def fmt_kpi(value):
+    value = float(value or 0)
+    if value >= 1_000_000:
+        return f"{value/1_000_000:.1f}M"
+    if value >= 1_000:
+        return f"{value/1_000:.1f}K"
+    return f"{value:,.0f}"
+
+@st.cache_data(show_spinner=False)
+def load_summary_metrics(path: str = SUMMARY_PATH) -> dict:
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def get_full_metrics(df: pd.DataFrame) -> dict:
+    fallback_total_pedidos = df["id_pedido"].nunique() if "id_pedido" in df.columns else len(df)
+    fallback_ped_sust = (
+        df[df["fue_sustituida"] == 1]["id_pedido"].nunique()
+        if "fue_sustituida" in df.columns and "id_pedido" in df.columns else 0
+    )
+    fallback_lineas = len(df)
+    fallback_lineas_sust = int(df["fue_sustituida"].sum()) if "fue_sustituida" in df.columns else 0
+    metrics = load_summary_metrics()
+    return {
+        "total_pedidos": int(metrics.get("total_pedidos", fallback_total_pedidos)),
+        "pedidos_con_sustitucion": int(metrics.get("pedidos_con_sustitucion", fallback_ped_sust)),
+        "lineas_totales": int(metrics.get("lineas_totales", fallback_lineas)),
+        "lineas_sustituidas": int(metrics.get("lineas_sustituidas", fallback_lineas_sust)),
+        "demo_lineas": int(metrics.get("demo_lineas", len(df))),
+    }
+
 
 def _gemini_ok():
     if not get_secret("GEMINI_API_KEY"): return False
@@ -376,10 +411,11 @@ if "Home" in menu:
         st.warning("⚠️ No hay datos. Coloca data_demo.csv o merged.csv en la carpeta ORDER RESCUE/ y reinicia.")
         st.stop()
 
-    total_pedidos = df["id_pedido"].nunique() if "id_pedido" in df.columns else len(df)
-    ped_sust      = df[df["fue_sustituida"]==1]["id_pedido"].nunique() if "fue_sustituida" in df.columns and "id_pedido" in df.columns else 0
-    lineas_total  = len(df)
-    lineas_sust   = int(df["fue_sustituida"].sum()) if "fue_sustituida" in df.columns else 0
+    full_metrics  = get_full_metrics(df)
+    total_pedidos = full_metrics["total_pedidos"]
+    ped_sust      = full_metrics["pedidos_con_sustitucion"]
+    lineas_total  = full_metrics["lineas_totales"]
+    lineas_sust   = full_metrics["lineas_sustituidas"]
     pct_sust      = lineas_sust / lineas_total if lineas_total else 0
     rar           = (df["prob_sustitucion"] * df["_money"]).sum()
     rescue        = rar * 0.70
@@ -387,19 +423,19 @@ if "Home" in menu:
     c1,c2,c3,c4 = st.columns(4)
     with c1: st.markdown(f"""<div class='kpi-card'>
         <div class='kpi-label'>Total Pedidos</div>
-        <div class='kpi-value'>{total_pedidos/1000:.1f}K</div>
-        <div class='kpi-sub'>pedidos únicos</div></div>""", unsafe_allow_html=True)
+        <div class='kpi-value'>{fmt_kpi(total_pedidos)}</div>
+        <div class='kpi-sub'>base completa</div></div>""", unsafe_allow_html=True)
     with c2: st.markdown(f"""<div class='kpi-card kpi-amber'>
         <div class='kpi-label'>Pedidos con Sustitución</div>
-        <div class='kpi-value'>{ped_sust/1000:.1f}K</div>
+        <div class='kpi-value'>{fmt_kpi(ped_sust)}</div>
         <div class='kpi-sub' style='color:#FF8C00;'>{ped_sust/total_pedidos*100:.2f}% del total</div></div>""", unsafe_allow_html=True)
     with c3: st.markdown(f"""<div class='kpi-card'>
         <div class='kpi-label'>Líneas Totales</div>
-        <div class='kpi-value'>{lineas_total/1000:.1f}K</div>
-        <div class='kpi-sub'>líneas de pedido</div></div>""", unsafe_allow_html=True)
+        <div class='kpi-value'>{fmt_kpi(lineas_total)}</div>
+        <div class='kpi-sub'>base completa</div></div>""", unsafe_allow_html=True)
     with c4: st.markdown(f"""<div class='kpi-card kpi-red'>
         <div class='kpi-label'>Líneas Sustituidas</div>
-        <div class='kpi-value'>{lineas_sust/1000:.1f}K</div>
+        <div class='kpi-value'>{fmt_kpi(lineas_sust)}</div>
         <div class='kpi-sub' style='color:#E4002B;'>{pct_sust*100:.2f}% de líneas</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -479,22 +515,23 @@ elif "Panel" in menu:
 
     if df.empty: st.warning("No hay datos."); st.stop()
 
-    # KPIs superiores (igual a la referencia)
-    total_pedidos = df["id_pedido"].nunique() if "id_pedido" in df.columns else len(df)
-    ped_sust = df[df["fue_sustituida"]==1]["id_pedido"].nunique() if "fue_sustituida" in df.columns and "id_pedido" in df.columns else 0
-    lineas_total = len(df)
-    lineas_sust = int(df["fue_sustituida"].sum()) if "fue_sustituida" in df.columns else 0
+    # KPIs superiores: resumen de base completa; tabla: muestra demo ligera.
+    full_metrics = get_full_metrics(df)
+    total_pedidos = full_metrics["total_pedidos"]
+    ped_sust = full_metrics["pedidos_con_sustitucion"]
+    lineas_total = full_metrics["lineas_totales"]
+    lineas_sust = full_metrics["lineas_sustituidas"]
 
     c1,c2,c3,c4 = st.columns(4)
     with c1: st.markdown(f"""<div class='kpi-card'><div class='kpi-label'>Total Pedidos</div>
-        <div class='kpi-value'>{total_pedidos/1000:.1f}K</div><div class='kpi-sub'>Orders.csv</div></div>""", unsafe_allow_html=True)
+        <div class='kpi-value'>{fmt_kpi(total_pedidos)}</div><div class='kpi-sub'>Orders.csv completo</div></div>""", unsafe_allow_html=True)
     with c2: st.markdown(f"""<div class='kpi-card kpi-amber'><div class='kpi-label'>Pedidos con Sustitución</div>
-        <div class='kpi-value'>{ped_sust/1000:.1f}K</div>
+        <div class='kpi-value'>{fmt_kpi(ped_sust)}</div>
         <div class='kpi-sub' style='color:#FF8C00;'>{ped_sust/total_pedidos*100:.2f}% del total</div></div>""", unsafe_allow_html=True)
     with c3: st.markdown(f"""<div class='kpi-card'><div class='kpi-label'>Líneas Totales</div>
-        <div class='kpi-value'>{lineas_total/1000:.1f}K</div><div class='kpi-sub'>OrderDetails.csv</div></div>""", unsafe_allow_html=True)
+        <div class='kpi-value'>{fmt_kpi(lineas_total)}</div><div class='kpi-sub'>OrderDetails.csv completo</div></div>""", unsafe_allow_html=True)
     with c4: st.markdown(f"""<div class='kpi-card kpi-red'><div class='kpi-label'>Líneas Sustituidas</div>
-        <div class='kpi-value'>{lineas_sust/1000:.1f}K</div>
+        <div class='kpi-value'>{fmt_kpi(lineas_sust)}</div>
         <div class='kpi-sub' style='color:#E4002B;'>{lineas_sust/lineas_total*100:.2f}% de líneas</div></div>""", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -547,7 +584,7 @@ elif "Panel" in menu:
     display["_status_display"] = np.random.choice(STATUSES, size=len(display), p=[0.55,0.20,0.15,0.10])
 
     total_shown = min(PAGE_SIZE, len(filt_sorted))
-    st.markdown(f"<div style='font-size:.78rem;color:#888;margin-bottom:8px;'>Mostrando {total_shown} registros más recientes de {len(filt_sorted):,} — aplica filtros para ver más</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size:.78rem;color:#888;margin-bottom:8px;'>Mostrando {total_shown} registros más recientes de {len(filt_sorted):,} muestra demo — KPIs superiores calculados sobre base completa</div>", unsafe_allow_html=True)
 
     def badge_riesgo(nivel):
         cls = {"Alto":"badge-alto","Medio":"badge-medio","Bajo":"badge-bajo"}.get(nivel,"badge-bajo")

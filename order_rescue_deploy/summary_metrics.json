@@ -1,0 +1,9 @@
+{
+  "source": "bases/merged_final.csv",
+  "note": "Full dataset summary used for public KPI cards; table uses data_demo.csv sample.",
+  "total_pedidos": 27349,
+  "pedidos_con_sustitucion": 3020,
+  "lineas_totales": 957775,
+  "lineas_sustituidas": 184138,
+  "demo_lineas": 50000
+}
