@@ -3,7 +3,7 @@ Order Rescue AI — Hack4Her · Arca Continental
 Equipo: Code Minds
 Stack: XGBoost | Google Gemini | ElevenLabs | Twilio
 """
-import os, json, warnings, urllib.parse
+import os, json, html, warnings, urllib.parse
 warnings.filterwarnings("ignore")
 import streamlit as st
 import pandas as pd
@@ -660,7 +660,7 @@ elif "Panel" in menu:
 
         # Column widths tuned for Streamlit Cloud's narrower viewport.
         # Keep short headers so they do not wrap letter-by-letter.
-        COL_W = [0.95, 0.85, 0.85, 2.25, 1.55, 0.55, 1.05, 0.75, 0.85, 1.25, 0.85, 0.45, 0.45]
+        COL_W = [0.86, 0.76, 0.80, 2.70, 1.35, 0.48, 1.02, 0.72, 0.82, 1.15, 0.78, 0.42, 0.42]
         HDRS  = ["PEDIDO","CLIENTE","CEDIS","PRODUCTO","SUST.",
                  "QTY","STATUS","FECHA","SUBT.","PROB.","RIESGO","💬","🔊"]
 
@@ -682,17 +682,29 @@ elif "Panel" in menu:
             nivel_css = NIVEL_STYLES.get(rd["nivel"], "background:#f0f0f0;color:#444;")
             bg = "#fafafa" if i%2==0 else "#fff"
             cs = (
-                f"font-size:.77rem;padding:7px 3px;background:{bg};"
-                f"border-bottom:1px solid #f0f0f0;"
-                f"word-break:normal;overflow-wrap:normal;"
+                f"font-size:.77rem;padding:8px 3px;background:{bg};"
+                f"border-bottom:1px solid #f0f0f0;min-height:48px;"
+                f"box-sizing:border-box;word-break:normal;overflow-wrap:normal;"
+            )
+            prod_cs = (
+                f"{cs}font-weight:600;line-height:1.18;"
+                f"display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"
+                f"overflow:hidden;overflow-wrap:anywhere;"
+            )
+            sust_cs = (
+                f"{cs}color:#888;font-size:.73rem;line-height:1.2;"
+                f"display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"
+                f"overflow:hidden;overflow-wrap:anywhere;"
             )
 
             row_cols = st.columns(COL_W)
             row_cols[0].markdown(f"<div style='{cs}color:#aaa;font-family:monospace;font-size:.69rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['pid']}</div>", unsafe_allow_html=True)
             row_cols[1].markdown(f"<div style='{cs}color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{rd['cid']}</div>", unsafe_allow_html=True)
             row_cols[2].markdown(f"<div style='{cs}font-weight:700;font-size:.76rem;white-space:nowrap;'>CEDIS {rd['cedi']}</div>", unsafe_allow_html=True)
-            row_cols[3].markdown(f"<div style='{cs}font-weight:500;line-height:1.25;'>{rd['prod']}</div>", unsafe_allow_html=True)
-            row_cols[4].markdown(f"<div style='{cs}color:#888;font-size:.73rem;line-height:1.25;'>{rd['sust']}</div>", unsafe_allow_html=True)
+            prod_html = html.escape(rd["prod"])
+            sust_html = html.escape(rd["sust"])
+            row_cols[3].markdown(f"<div title='{prod_html}' style='{prod_cs}'>{prod_html}</div>", unsafe_allow_html=True)
+            row_cols[4].markdown(f"<div title='{sust_html}' style='{sust_cs}'>{sust_html}</div>", unsafe_allow_html=True)
             row_cols[5].markdown(f"<div style='{cs}text-align:center;'>{rd['qty']}</div>", unsafe_allow_html=True)
             row_cols[6].markdown(f"<div style='{cs}'><span style='{stat_css}border-radius:20px;padding:2px 8px;font-size:.71rem;font-weight:600;'>{stat_label}</span></div>", unsafe_allow_html=True)
             row_cols[7].markdown(f"<div style='{cs}color:#888;white-space:nowrap;'>{rd['fecha']}</div>", unsafe_allow_html=True)

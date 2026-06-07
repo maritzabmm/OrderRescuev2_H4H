@@ -70,11 +70,6 @@ TWILIO_AUTH_TOKEN = "..."
 TWILIO_PHONE_NUMBER = "..."
 ```
 
-The app still works without these secrets using fallback messages.
-
-## Recommended Presentation Framing
-
-The technical pipeline and notebooks support the real modeling story. The Streamlit app in `order_rescue_deploy/` is the product demo showing how risk scores become operational actions for warehouse teams and customer communication.
 
 
 
