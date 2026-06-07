@@ -374,13 +374,6 @@ with st.sidebar:
     </div>""", unsafe_allow_html=True)
     st.divider()
 
-    g = _gemini_ok(); e = _eleven_ok(); t = _twilio_ok()
-    st.markdown(f"""<div style='font-size:.7rem;text-align:center;line-height:2;'>
-        {'🟢' if g else '🔴'} <b>Gemini</b> {'ON' if g else 'OFF'}<br>
-        {'🟢' if e else '🔴'} <b>ElevenLabs</b> {'ON' if e else 'OFF'}<br>
-        {'🟢' if t else '🔴'} <b>Twilio</b> {'ON' if t else 'OFF'}
-    </div>""", unsafe_allow_html=True)
-    st.divider()
 
     st.markdown("""<div style='text-align:center;'>
         <span style='background:#E4002B;color:#fff;font-family:Barlow Condensed,sans-serif;
@@ -788,11 +781,11 @@ elif "Panel" in menu:
                 &nbsp;·&nbsp; CEDI {cedi_n}
                 &nbsp;·&nbsp;
                 <span class='ai-badge' style='display:inline-flex;vertical-align:middle;'>
-                    {'✨ Gemini ON' if g_ok else '📝 Gemini OFF'}
+                    ✨ Texto IA
                 </span>
                 &nbsp;
                 <span class='voice-badge' style='display:inline-flex;vertical-align:middle;'>
-                    {'🔊 ElevenLabs ON' if e_ok else '🔇 ElevenLabs OFF'}
+                    🔊 Voz TTS
                 </span>
             </div>
         </div>""", unsafe_allow_html=True)
