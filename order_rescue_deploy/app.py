@@ -352,7 +352,7 @@ def boton_whatsapp(numero: str, mensaje: str, label: str = "💬 Abrir WhatsApp"
 with st.sidebar:
     st.markdown("""<div style='text-align:center;padding:16px 0 8px;'>
         <div style='font-family:Barlow Condensed,sans-serif;font-size:1.6rem;font-weight:800;
-                    color:#E4002B;letter-spacing:1px;'>ORDER RESCUE</div>
+                    color:#E4002B;letter-spacing:1px;'>Stocki</div>
         <div style='font-size:.7rem;color:#aaa;letter-spacing:2px;'>AI PLATFORM</div>
     </div>""", unsafe_allow_html=True)
     st.divider()
