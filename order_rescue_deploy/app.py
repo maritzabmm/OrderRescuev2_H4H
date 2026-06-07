@@ -623,6 +623,9 @@ elif "Panel" in menu:
 
     # ── Init session state ──
     if "notif_sku"   not in st.session_state: st.session_state.notif_sku   = None
+    if "notif_prob"  not in st.session_state: st.session_state.notif_prob  = None
+    if "notif_nivel" not in st.session_state: st.session_state.notif_nivel = None
+    if "notif_cedi"  not in st.session_state: st.session_state.notif_cedi  = None
     if "notif_tab"   not in st.session_state: st.session_state.notif_tab   = "mensaje"
     if "notif_subs"  not in st.session_state: st.session_state.notif_subs  = ""
     if "notif_tel"   not in st.session_state: st.session_state.notif_tel   = "5218112345678"
@@ -732,9 +735,12 @@ elif "Panel" in menu:
                 if st.button("💬", key=f"msg_{i}",
                              help=f"Notificar cliente: {rd['prod_full']}",
                              use_container_width=True):
-                    st.session_state.notif_sku  = rd["prod_full"]
-                    st.session_state.notif_tab  = "mensaje"
-                    st.session_state.notif_subs = sku_subs_all.get(rd["prod_full"], "Producto alternativo")
+                    st.session_state.notif_sku   = rd["prod_full"]
+                    st.session_state.notif_prob  = rd["prob"]
+                    st.session_state.notif_nivel = rd["nivel"]
+                    st.session_state.notif_cedi  = rd["cedi"]
+                    st.session_state.notif_tab   = "mensaje"
+                    st.session_state.notif_subs  = sku_subs_all.get(rd["prod_full"], "Producto alternativo")
                     st.session_state.msg_panel  = None
                     st.session_state.panel_view = "notif"
                     st.rerun()
@@ -744,9 +750,12 @@ elif "Panel" in menu:
                 if st.button("🔊", key=f"aud_{i}",
                              help=f"Audio ElevenLabs: {rd['prod_full']}",
                              use_container_width=True):
-                    st.session_state.notif_sku  = rd["prod_full"]
-                    st.session_state.notif_tab  = "audio"
-                    st.session_state.notif_subs = sku_subs_all.get(rd["prod_full"], "Producto alternativo")
+                    st.session_state.notif_sku   = rd["prod_full"]
+                    st.session_state.notif_prob  = rd["prob"]
+                    st.session_state.notif_nivel = rd["nivel"]
+                    st.session_state.notif_cedi  = rd["cedi"]
+                    st.session_state.notif_tab   = "audio"
+                    st.session_state.notif_subs  = sku_subs_all.get(rd["prod_full"], "Producto alternativo")
                     st.session_state.msg_panel  = None
                     st.session_state.panel_view = "notif"
                     st.rerun()
@@ -759,10 +768,11 @@ elif "Panel" in menu:
     elif st.session_state.panel_view == "notif":
 
         sku_n    = st.session_state.notif_sku or "—"
-        prob_n   = float(sku_prob_all.get(sku_n, 0.5)) if sku_n in sku_prob_all.index else 0.5
-        cedi_n   = str(sku_cedi_all.get(sku_n, "N/D")) if sku_n in sku_cedi_all.index else "N/D"
+        prob_n   = float(st.session_state.notif_prob) if st.session_state.notif_prob is not None else (float(sku_prob_all.get(sku_n, 0.5)) if sku_n in sku_prob_all.index else 0.5)
+        cedi_n   = str(st.session_state.notif_cedi or (sku_cedi_all.get(sku_n, "N/D") if sku_n in sku_cedi_all.index else "N/D"))
+        nivel_n  = str(st.session_state.notif_nivel or pd.cut([prob_n], bins=[0,0.30,0.70,1.01], labels=["Bajo","Medio","Alto"], include_lowest=True)[0])
         subs_def = st.session_state.notif_subs or sku_subs_all.get(sku_n, "Producto alternativo")
-        col_p    = "#E4002B" if prob_n>=0.70 else "#FFB800" if prob_n>=0.30 else "#1DB954"
+        col_p    = "#E4002B" if nivel_n=="Alto" else "#FFB800" if nivel_n=="Medio" else "#1DB954"
 
         g_ok = _gemini_ok()
         e_ok = _eleven_ok()
