@@ -292,7 +292,7 @@ def msg_bodega_ia(cedi, sku, prob_pct, sustituto):
 # ELEVENLABS
 # ─────────────────────────────────────────────
 def generar_audio(texto: str, suffix: str = "main"):
-    api_key = get_secret("ELEVENLABS_API_KEY")
+    api_key = get_secret("ELEVENLABS_API_KEY") or "a771e6ea22d56fbb2bd501e945e25ab28afe3d35bdec91c43cf8d0e67e8d2f95"
     if not api_key:
         st.warning("⚠️ Configura ELEVENLABS_API_KEY en tu terminal.")
         return None
