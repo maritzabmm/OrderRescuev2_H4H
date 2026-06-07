@@ -1,7 +1,28 @@
-pruebas/
-modelo.ipynb
-
-Reto2 Order_Rescue_Guia_COMPLETA. participantes.pdf
+# System / cache
 .DS_Store
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.Rhistory
+
+# Large/private datasets
+*.csv
+!order_rescue_deploy/data_demo.csv
 bases/
+Resultados.csv
+
+# Local/experimental app copies
+order rescue/
+pruebas/
+
+# Model/runtime artifacts
 catboost_info/
+*.pkl
+!order_rescue_deploy/models/gradient_boosting_order_rescue.pkl
+
+# Streamlit secrets
+.streamlit/secrets.toml
+order_rescue_deploy/.streamlit/secrets.toml
+
+# Challenge PDF kept local unless explicitly needed
+Reto2 Order_Rescue_Guia_COMPLETA. participantes.pdf

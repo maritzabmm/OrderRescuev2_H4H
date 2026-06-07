@@ -1,0 +1,16 @@
+# System / cache
+.DS_Store
+__pycache__/
+*.pyc
+.Rhistory
+
+# Full local datasets and generated outputs
+merged.csv
+merged_final.csv
+outputs/
+
+# Local secrets
+.streamlit/secrets.toml
+
+# Empty/temporary artifacts
+gradient_boosting_rescue.pkl
